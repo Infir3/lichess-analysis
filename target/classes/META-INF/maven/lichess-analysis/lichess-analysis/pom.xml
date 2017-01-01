@@ -5,7 +5,7 @@
 	<artifactId>lichess-analysis</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
-<!-- 		<sourceDirectory>src</sourceDirectory> -->
+		<!-- <sourceDirectory>src</sourceDirectory> -->
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -49,5 +49,7 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+
+
 	</dependencies>
 </project>

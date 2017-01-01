@@ -15,32 +15,35 @@ import java.util.logging.Logger;
 
 import javax.json.*;
 
-import com.sun.istack.internal.Nullable;
-
 /**
  * @author Stefan Becking
  *
  */
 public class WebCrawler {
 
-	private static final String START_USER = "jobst";
-	private static final int CRAWL_DEPTH = 3;
+		private static HashMap<String, Boolean> crawledUsers = new HashMap<String, Boolean>();
+		
+		private HashSet<Game> games;
 
-	private static HashMap<String, Boolean> crawledUsers = new HashMap<String, Boolean>();
+	public HashSet<Game> getGames() {
+			return games;
+		}
 
-	public static void main(String[] args) throws IOException {
+		public void setGames(HashSet<Game> games) {
+			this.games = games;
+		}
 
-		HashSet<Game> games = null;
+	public void crawl(String startUser) throws IOException {
 
 		HashSet<String> users = new HashSet<String>();
 
 		HashMap<String, Boolean> crawledUsers = new HashMap<String, Boolean>();
 
-		games = getUserGames(START_USER);
+		games = getUserGames(startUser);
 
-		System.out.println("User " + START_USER + " has been crawled.");
+		System.out.println("User " + startUser + " has been crawled.");
 
-		crawledUsers.put(START_USER, true);
+		crawledUsers.put(startUser, true);
 
 		// get all users who played in the games
 		for (Game game : games) {
@@ -50,18 +53,16 @@ public class WebCrawler {
 
 		getGamesOfManyUsers(users);
 
-		for (int i = 0; i < CRAWL_DEPTH; i++) {
-
-		}
+//		for (int i = 0; i < CRAWL_DEPTH; i++) {
+//
+//		}
 
 		System.out.println("Numbers of games fetched: " + games.size());
 		for (Game game : games) {
 			System.out.println("id: " + game.id + " white: " + game.white + " black: " + game.black + " eco: "
 					+ game.eco + " name: " + game.name);
 		}
-
-		saveToFile(games, null);
-
+	
 	}
 
 	/**
@@ -71,7 +72,7 @@ public class WebCrawler {
 	 * @return
 	 * @throws IOException
 	 */
-	private static HashSet<Game> getUserGames(String user) throws IOException {
+	private HashSet<Game> getUserGames(String user) throws IOException {
 
 		String urlString = "https://en.lichess.org/api/user/" + user + "/games?with_opening=1";
 
@@ -96,7 +97,7 @@ public class WebCrawler {
 
 	}
 
-	private static HashSet<Game> getGamesOfManyUsers(Set<String> users) throws IOException {
+	private HashSet<Game> getGamesOfManyUsers(Set<String> users) throws IOException {
 
 		HashSet<Game> games = new HashSet<Game>();
 
@@ -114,25 +115,23 @@ public class WebCrawler {
 		return games;
 
 	}
+	
+	protected String saveToFile(){
+		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+		String fileName = "game_data_" + timeStamp + ".txt";
+		return saveToFile(fileName);
+	}
 
-	protected static void saveToFile(Set<Game> games, @Nullable String fileName) {
-		String fileNameFinal;
-		
+	protected String saveToFile(String fileName) {
+
 		Logger log = Logger.getLogger(de.sb.LichessAnalysis.WebCrawler.class.getName());
 
 		int numberOfResults = games.size();
 
-		if (fileName == null) {
-			String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-			fileNameFinal = "game_data_" + timeStamp;
-		} else {
-			fileNameFinal = fileName;
-		}
-
 		log.log(Level.INFO, "Writing " + numberOfResults + " entries ...");
 		try {			
 
-			PrintWriter out = new PrintWriter(fileNameFinal);
+			PrintWriter out = new PrintWriter(fileName);
 
 			for (Game game : games) {
 				// write file
@@ -156,6 +155,8 @@ public class WebCrawler {
 			log.log(Level.SEVERE, "Write error!");
 			e.printStackTrace();
 		}
+		
+		return fileName;
 	}
 
 }
