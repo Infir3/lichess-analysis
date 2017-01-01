@@ -1,0 +1,3 @@
+2;a;b;B80;Sicilian Defense: Scheveningen Variation;
+3;a;b;B01;Scandinavian Defense: Blackburne Gambit;
+1;a;b;B77;Sicilian Defense: Dragon Variation, Yugoslav Attack, Main Line;
